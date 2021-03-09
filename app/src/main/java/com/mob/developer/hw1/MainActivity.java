@@ -78,4 +78,6 @@ public class MainActivity extends AppCompatActivity {
         rvCoins.setLayoutManager(new LinearLayoutManager(this));
         rvCoins.setAdapter(new Adapter(this, coinArrayList));
     }
+
+    // push test!!
 }
