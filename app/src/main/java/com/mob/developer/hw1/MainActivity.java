@@ -32,8 +32,10 @@ public class MainActivity extends AppCompatActivity {
         * get data from api in new thread and fetch it in UI
         * */
         generateData();
-
         setData();
+
+
+        // test: refresh list
         Handler handler = new Handler();
         Runnable runnable = new Runnable() {
             @Override
@@ -44,6 +46,22 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         handler.postDelayed(runnable,2000);
+
+
+        /*
+        * set onClickListener for 'load more' button
+        * and get data from api in new thread and refresh the list
+        *
+        * */
+
+
+        /*
+        * set onClick listener for recyclerView
+        *
+        * */
+
+
+        
 
     }
 
