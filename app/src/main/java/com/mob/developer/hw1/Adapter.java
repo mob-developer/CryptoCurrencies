@@ -4,39 +4,80 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class Adapter extends RecyclerView.Adapter<ViewHolder> {
-    private Context context;
-    private ArrayList<Coin> coinList;
+public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
-    public Adapter(Context context, ArrayList<Coin> coinList) {
-        this.context = context;
-        this.coinList = coinList;
+    public interface OnItemClickListener {
+        void onItemClick(Coin item);
     }
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.row, parent, false);
-        return new ViewHolder(view);
+    private final List<Coin> items;
+    private final OnItemClickListener listener;
+
+    public Adapter(List<Coin> items, OnItemClickListener listener) {
+        this.items = items;
+        this.listener = listener;
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Coin coin = coinList.get(position);
+    @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, parent, false);
+        return new ViewHolder(v);
+    }
+
+    @Override public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.bind(items.get(position), listener);
+        Coin coin = items.get(position);
         holder.setCoinPrice(coin.getPrice());
         holder.setCoinName(coin.getName());
         holder.setYear(coin.getYear());
     }
 
-    @Override
-    public int getItemCount() {
-        return coinList == null ? 0 : coinList.size();
+    @Override public int getItemCount() {
+        return items.size();
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView txtCoinName;
+        private TextView txtCoinPrice;
+        private TextView txtYear;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            txtCoinPrice = itemView.findViewById(R.id.txt_coin_price);
+            txtCoinName = itemView.findViewById(R.id.txt_coin_name);
+            txtYear = itemView.findViewById(R.id.txt_year);
+        }
+
+        public void setCoinName(String coinName) {
+            this.txtCoinName.setText(coinName);
+        }
+
+        public void setCoinPrice(String coinPrice) {
+            this.txtCoinPrice.setText(coinPrice);
+        }
+
+        public void setYear(String year) {
+            this.txtYear.setText(year);
+        }
+
+
+        public void bind(final Coin item, final OnItemClickListener listener) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    listener.onItemClick(item);
+                }
+            });
+        }
     }
 }

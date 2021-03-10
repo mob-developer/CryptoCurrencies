@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         * */
 
 
+
         
 
     }
@@ -76,7 +77,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void setData() {
         rvCoins.setLayoutManager(new LinearLayoutManager(this));
-        rvCoins.setAdapter(new Adapter(this, coinArrayList));
+        Adapter.OnItemClickListener listener = new Adapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Coin item) {
+                Toast.makeText(getApplicationContext(),item.getName(),Toast.LENGTH_SHORT).show();
+            }
+        };
+        rvCoins.setAdapter(new Adapter(coinArrayList,listener));
+//        rvCoins.setAdapter(new Adapter(this, coinArrayList));
     }
 
     // push test!!
