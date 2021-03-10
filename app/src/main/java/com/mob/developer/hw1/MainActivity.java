@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Coin> coinArrayList;
     private RecyclerView rvCoins;
+    private Adapter.OnItemClickListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,10 +79,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void setData() {
         rvCoins.setLayoutManager(new LinearLayoutManager(this));
-        Adapter.OnItemClickListener listener = new Adapter.OnItemClickListener() {
+        listener = new Adapter.OnItemClickListener() {
             @Override
             public void onItemClick(Coin item) {
-                Toast.makeText(getApplicationContext(),item.getName(),Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),item.getName(),Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this,CoinOHLC.class);
+                intent.putExtra("name",item.getName());
+                startActivity(intent);
             }
         };
         rvCoins.setAdapter(new Adapter(coinArrayList,listener));
