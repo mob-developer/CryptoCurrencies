@@ -36,11 +36,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*
-        test save data
-         */
-        new Coin("bit","1200", "2002");
-        Coin.logToFile(context);
         setContentView(R.layout.activity_main);
         init();
 
@@ -117,18 +112,18 @@ public class MainActivity extends AppCompatActivity {
 
         OkHttpClient okHttpClient = new OkHttpClient();
 
-        String miniUrl;
+        String miniUrl = null;
         final String description;
         switch (range) {
 
             case weekly:
-                miniUrl = "period_id=1DAY".concat("&time_end=".concat(getCurrentDate()).concat("&limit=7"));
+              //  miniUrl = "period_id=1DAY".concat("&time_end=".concat(getCurrentDate()).concat("&limit=7"));
                 // TODO getCurrentDate?!
                 description = "Daily candles from now";
                 break;
 
             case oneMonth:
-                miniUrl = "period_id=1DAY".concat("&time_end=".concat(getCurrentDate()).concat("&limit=30"));
+             //   miniUrl = "period_id=1DAY".concat("&time_end=".concat(getCurrentDate()).concat("&limit=30"));
                 // TODO getCurrentDate?!
                 description = "Daily candles from now";
                 break;
