@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Toast;
@@ -19,10 +20,16 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Coin> coinArrayList;
     private RecyclerView rvCoins;
+    private Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*
+        test save data
+         */
+        new Coin("bit","1200", "2002");
+        Coin.logToFile(context);
         setContentView(R.layout.activity_main);
         init();
 
