@@ -1,18 +1,15 @@
 package com.mob.developer.hw1;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
@@ -30,7 +27,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     }
 
     @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.coin_row, parent, false);
         return new ViewHolder(v);
     }
 
@@ -39,7 +36,11 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         Coin coin = items.get(position);
         holder.setCoinPrice(coin.getPrice());
         holder.setCoinName(coin.getName());
-        holder.setYear(coin.getYear());
+        holder.setChange1h(coin.getChange1h());
+        holder.setChange24h(coin.getChange24h());
+        holder.setChange7d(coin.getChange7d());
+        holder.setCoinNameAbbr(coin.getAbbrName());
+        holder.setImageAddress(coin.getImgAddress());
     }
 
     @Override public int getItemCount() {
@@ -50,13 +51,21 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
         private TextView txtCoinName;
         private TextView txtCoinPrice;
-        private TextView txtYear;
+        private TextView coinNameAbbr;
+        private TextView change1h;
+        private TextView change24h;
+        private TextView change7d;
+        private ImageView coinImage;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            txtCoinPrice = itemView.findViewById(R.id.txt_coin_price);
-            txtCoinName = itemView.findViewById(R.id.txt_coin_name);
-            txtYear = itemView.findViewById(R.id.txt_year);
+            txtCoinPrice = itemView.findViewById(R.id.coin_price_lbl);
+            txtCoinName = itemView.findViewById(R.id.coin_name_lbl);
+            coinNameAbbr = itemView.findViewById(R.id.coin_abbr_name_lbl);
+            change1h = itemView.findViewById(R.id.coin_change_1h);
+            change24h = itemView.findViewById(R.id.coin_change_24h);
+            change7d = itemView.findViewById(R.id.coin_change_7d);
+            coinImage = itemView.findViewById(R.id.coin_image);
         }
 
         public void setCoinName(String coinName) {
@@ -67,8 +76,21 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             this.txtCoinPrice.setText(coinPrice);
         }
 
-        public void setYear(String year) {
-            this.txtYear.setText(year);
+        public void setCoinNameAbbr(String CoinNameAbbr) {
+            this.coinNameAbbr.setText(CoinNameAbbr);
+        }
+        public void setImageAddress(String ImageAddress) {
+//            this.ImageAddress.setText(ImageAddress);
+            //TODO
+        }
+        public void setChange1h(String Change1h) {
+            this.change1h.setText(Change1h);
+        }
+        public void setChange24h(String Change24h) {
+            this.change24h.setText(Change24h);
+        }
+        public void setChange7d(String Change7d) {
+            this.change7d.setText(Change7d);
         }
 
 
