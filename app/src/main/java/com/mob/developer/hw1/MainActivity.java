@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                coinArrayList.add(new Coin("ByteCoin!", "20,000 $", "2020"));
+                coinArrayList.add(new Coin("Bitcoin","addr","320500$","bitc","-5.6%","+0.2%","+0.5%"));
                 setData();
 
             }
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void generateData() {
-        coinArrayList.add(new Coin("bitcoin", "200 $", "2021"));
+        coinArrayList.add(new Coin("ByteCoin","addr2","3000$","byteC","-15.6%","+10.2%","+10.5%"));
     }
 
     private void setData() {
