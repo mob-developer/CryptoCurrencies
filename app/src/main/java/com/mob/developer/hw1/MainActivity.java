@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -29,6 +30,7 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Coin> coinArrayList;
     private RecyclerView rvCoins;
+    private Context context = this;
     private Adapter.OnItemClickListener listener;
 
     @Override
@@ -110,18 +112,18 @@ public class MainActivity extends AppCompatActivity {
 
         OkHttpClient okHttpClient = new OkHttpClient();
 
-        String miniUrl;
+        String miniUrl = null;
         final String description;
         switch (range) {
 
             case weekly:
-                miniUrl = "period_id=1DAY".concat("&time_end=".concat(getCurrentDate()).concat("&limit=7"));
+              //  miniUrl = "period_id=1DAY".concat("&time_end=".concat(getCurrentDate()).concat("&limit=7"));
                 // TODO getCurrentDate?!
                 description = "Daily candles from now";
                 break;
 
             case oneMonth:
-                miniUrl = "period_id=1DAY".concat("&time_end=".concat(getCurrentDate()).concat("&limit=30"));
+             //   miniUrl = "period_id=1DAY".concat("&time_end=".concat(getCurrentDate()).concat("&limit=30"));
                 // TODO getCurrentDate?!
                 description = "Daily candles from now";
                 break;
