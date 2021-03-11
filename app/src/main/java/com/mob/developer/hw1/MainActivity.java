@@ -9,7 +9,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -108,6 +107,10 @@ public class MainActivity extends AppCompatActivity {
         oneMonth,
     }
 
+    public static long getCurrentDate(){
+        return System.currentTimeMillis();
+    }
+
     public void getCandles(String symbol,Range range) {
 
         OkHttpClient okHttpClient = new OkHttpClient();
@@ -117,14 +120,12 @@ public class MainActivity extends AppCompatActivity {
         switch (range) {
 
             case weekly:
-              //  miniUrl = "period_id=1DAY".concat("&time_end=".concat(getCurrentDate()).concat("&limit=7"));
-                // TODO getCurrentDate?!
+                miniUrl = "period_id=1DAY".concat("&time_end=".concat(String.valueOf(getCurrentDate())).concat("&limit=7"));
                 description = "Daily candles from now";
                 break;
 
             case oneMonth:
-             //   miniUrl = "period_id=1DAY".concat("&time_end=".concat(getCurrentDate()).concat("&limit=30"));
-                // TODO getCurrentDate?!
+                miniUrl = "period_id=1DAY".concat("&time_end=".concat(String.valueOf(getCurrentDate())).concat("&limit=30"));
                 description = "Daily candles from now";
                 break;
 
