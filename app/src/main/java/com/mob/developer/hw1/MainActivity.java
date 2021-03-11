@@ -7,9 +7,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /*
 * coin market cap api key:
@@ -107,11 +116,13 @@ public class MainActivity extends AppCompatActivity {
 
             case weekly:
                 miniUrl = "period_id=1DAY".concat("&time_end=".concat(getCurrentDate()).concat("&limit=7"));
+                // TODO getCurrentDate?!
                 description = "Daily candles from now";
                 break;
 
             case oneMonth:
                 miniUrl = "period_id=1DAY".concat("&time_end=".concat(getCurrentDate()).concat("&limit=30"));
+                // TODO getCurrentDate?!
                 description = "Daily candles from now";
                 break;
 
@@ -127,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         String url = urlBuilder.build().toString();
 
         final Request request = new Request.Builder().url(url)
-                .addHeader("X-CoinAPI-Key", YOUR_COIN_IO_API_KEY)
+                .addHeader("X-CoinAPI-Key", "1dfc3423-a3cb-4aea-802e-5a7ee6b24d2d")
                 .build();
 
         okHttpClient.newCall(request).enqueue(new Callback() {
@@ -150,5 +161,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    // push test!!
+
+
 }
