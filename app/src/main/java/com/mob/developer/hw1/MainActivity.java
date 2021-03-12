@@ -9,7 +9,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,11 +21,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-/*
- * coin market cap api key:
- * 1dfc3423-a3cb-4aea-802e-5a7ee6b24d2d
- *
- * */
+
 
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Coin> coinArrayList;
@@ -82,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void init() {
         coinArrayList = new ArrayList<>();
-//        rvCoins = findViewById(R.id.rv_coins);
+        rvCoins = findViewById(R.id.rv_coins);
     }
 
     private void generateData() {
@@ -103,16 +98,18 @@ public class MainActivity extends AppCompatActivity {
         rvCoins.setAdapter(new Adapter(coinArrayList, listener));
 //        rvCoins.setAdapter(new Adapter(this, coinArrayList));
     }
+    public enum Range {
+        weekly,
+        oneMonth,
+    }
 
     private static Date getCurrentDate(){
         return new Date();
     }
 
 
-    public enum Range {
-        weekly,
-        oneMonth,
-    }
+
+    //OHLCV latest data
 
     public void getCandles(String symbol,Range range) {
 
@@ -123,12 +120,12 @@ public class MainActivity extends AppCompatActivity {
         switch (range) {
 
             case weekly:
-                miniUrl = "period_id=1DAY".concat("&time_end=".concat(String.valueOf(getCurrentDate())).concat("&limit=7"));
-                description = "Daily candles from now";
+                miniUrl = "period_id=7DAY".concat("&time_end=".concat(String.valueOf(getCurrentDate())).concat("&limit=7"));
+                description = "Weekly candles from now";
                 break;
 
             case oneMonth:
-                miniUrl = "period_id=1DAY".concat("&time_end=".concat(String.valueOf(getCurrentDate())).concat("&limit=30"));
+                miniUrl = "period_id=1MTH".concat("&time_end=".concat(String.valueOf(getCurrentDate())).concat("&limit=30"));
                 description = "Daily candles from now";
                 break;
 
@@ -161,12 +158,17 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     //extractCandlesFromResponse(response.body().string(), description);
                     System.out.println(new Date());
-//                    Log.v("sample", String.valueOf(new Date()));
+                    Log.v("sample", String.valueOf(new Date()));
+                    Log.v("response", String.valueOf(response));
                 }
             }
         });
 
     }
+
+
+
+
 
 
 }
