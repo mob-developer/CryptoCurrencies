@@ -12,6 +12,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -31,7 +32,6 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Coin> coinArrayList;
     private RecyclerView rvCoins;
-    private Context context = this;
     private Adapter.OnItemClickListener listener;
 
     @Override
@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
          * */
         generateData();
         setData();
+        Toast.makeText(getApplicationContext(),String.valueOf(getCurrentDate()),Toast.LENGTH_SHORT).show();
 
 
         // test: refresh list
@@ -75,14 +76,14 @@ public class MainActivity extends AppCompatActivity {
          * */
 
 
-        getCandles("bitcoin", Range.weekly);
+        getCandles("BTC", Range.weekly);
 
 
     }
 
     private void init() {
         coinArrayList = new ArrayList<>();
-//        rvCoins = findViewById(R.id.rv_coins);
+        rvCoins = findViewById(R.id.rv_coins);
     }
 
     private void generateData() {
@@ -104,9 +105,16 @@ public class MainActivity extends AppCompatActivity {
 //        rvCoins.setAdapter(new Adapter(this, coinArrayList));
     }
 
-    private static Date getCurrentDate(){
-        return new Date();
+    private static String getCurrentDate() {
+        Date date =  new Date(System.currentTimeMillis()-(3600*1000*24));
+        SimpleDateFormat DateFor = new SimpleDateFormat("yyyy-MM-dd");
+        String stringDate= DateFor.format(date);
+
+        SimpleDateFormat DateFor2 = new SimpleDateFormat("HH:mm:ss");
+        String stringDate2= DateFor2.format(date);
+        return stringDate+"T"+stringDate2;
     }
+
 
 
     public enum Range {
@@ -114,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         oneMonth,
     }
 
-    public void getCandles(String symbol,Range range) {
+    public void getCandles(String symbol, Range range) {
 
         OkHttpClient okHttpClient = new OkHttpClient();
 
@@ -123,7 +131,8 @@ public class MainActivity extends AppCompatActivity {
         switch (range) {
 
             case weekly:
-                miniUrl = "period_id=1DAY".concat("&time_end=".concat(String.valueOf(getCurrentDate())).concat("&limit=7"));
+                miniUrl = "period_id=1DAY".concat("&time_start="+String.valueOf(getCurrentDate()));
+                //+"&time_end=".concat(String.valueOf(getCurrentDate())).concat("&limit=7")
                 description = "Daily candles from now";
                 break;
 
@@ -143,14 +152,15 @@ public class MainActivity extends AppCompatActivity {
 
         String url = urlBuilder.build().toString();
 
+
         final Request request = new Request.Builder().url(url)
-                .addHeader("X-CoinAPI-Key", "1dfc3423-a3cb-4aea-802e-5a7ee6b24d2d")
+                .addHeader("X-CoinAPI-Key", "917174EC-0BF3-4365-8C9E-C79741576C25")
                 .build();
 
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.v("TAG", e.getMessage());
+                Log.v("resresres", e.getMessage());
             }
 
             @Override
@@ -160,8 +170,8 @@ public class MainActivity extends AppCompatActivity {
                     throw new IOException("Unexpected code " + response);
                 } else {
                     //extractCandlesFromResponse(response.body().string(), description);
-                    System.out.println(new Date());
-//                    Log.v("sample", String.valueOf(new Date()));
+                    //System.out.println(new Date());
+                    Log.v("resresres", response.body().string());
                 }
             }
         });
