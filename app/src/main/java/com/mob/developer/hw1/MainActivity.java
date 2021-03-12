@@ -9,9 +9,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -21,10 +23,10 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /*
-* coin market cap api key:
-* 1dfc3423-a3cb-4aea-802e-5a7ee6b24d2d
-*
-* */
+ * coin market cap api key:
+ * 1dfc3423-a3cb-4aea-802e-5a7ee6b24d2d
+ *
+ * */
 
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Coin> coinArrayList;
@@ -39,10 +41,10 @@ public class MainActivity extends AppCompatActivity {
         init();
 
         /*
-        * replace generateData() with:
-        * load data from cache and show loading
-        * get data from api in new thread and fetch it in UI
-        * */
+         * replace generateData() with:
+         * load data from cache and show loading
+         * get data from api in new thread and fetch it in UI
+         * */
         generateData();
         setData();
 
@@ -52,29 +54,29 @@ public class MainActivity extends AppCompatActivity {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                coinArrayList.add(new Coin("Bitcoin","addr","320500$","bitc","-5.6%","+0.2%","+0.5%"));
+                coinArrayList.add(new Coin("Bitcoin", "addr", "320500$", "bitc", "-5.6%", "+0.2%", "+0.5%"));
                 setData();
 
             }
         };
-        handler.postDelayed(runnable,2000);
+        handler.postDelayed(runnable, 2000);
 
 
         /*
-        * set onClickListener for 'load more' button
-        * and get data from api in new thread and refresh the list
-        *
-        * */
+         * set onClickListener for 'load more' button
+         * and get data from api in new thread and refresh the list
+         *
+         * */
 
 
         /*
-        * set onClick listener for recyclerView
-        *
-        * */
+         * set onClick listener for recyclerView
+         *
+         * */
 
 
+        getCandles("bitcoin", Range.weekly);
 
-        
 
     }
 
@@ -84,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void generateData() {
-        coinArrayList.add(new Coin("ByteCoin","addr2","3000$","byteC","-15.6%","+10.2%","+10.5%"));
+        coinArrayList.add(new Coin("ByteCoin", "addr2", "3000$", "byteC", "-15.6%", "+10.2%", "+10.5%"));
     }
 
     private void setData() {
@@ -93,17 +95,78 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(Coin item) {
 //                Toast.makeText(getApplicationContext(),item.getName(),Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this,CoinOHLC.class);
-                intent.putExtra("name",item.getName());
+                Intent intent = new Intent(MainActivity.this, CoinOHLC.class);
+                intent.putExtra("name", item.getName());
                 startActivity(intent);
             }
         };
-        rvCoins.setAdapter(new Adapter(coinArrayList,listener));
+        rvCoins.setAdapter(new Adapter(coinArrayList, listener));
 //        rvCoins.setAdapter(new Adapter(this, coinArrayList));
     }
 
+    private static Date getCurrentDate(){
+        return new Date();
+    }
 
 
+    public enum Range {
+        weekly,
+        oneMonth,
+    }
+
+    public void getCandles(String symbol,Range range) {
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+
+        String miniUrl;
+        final String description;
+        switch (range) {
+
+            case weekly:
+                miniUrl = "period_id=1DAY".concat("&time_end=".concat(String.valueOf(getCurrentDate())).concat("&limit=7"));
+                description = "Daily candles from now";
+                break;
+
+            case oneMonth:
+                miniUrl = "period_id=1DAY".concat("&time_end=".concat(String.valueOf(getCurrentDate())).concat("&limit=30"));
+                description = "Daily candles from now";
+                break;
+
+            default:
+                miniUrl = "";
+                description = "";
+
+        }
+
+        HttpUrl.Builder urlBuilder = HttpUrl.parse("https://rest.coinapi.io/v1/ohlcv/".concat(symbol).concat("/USD/history?".concat(miniUrl)))
+                .newBuilder();
+
+        String url = urlBuilder.build().toString();
+
+        final Request request = new Request.Builder().url(url)
+                .addHeader("X-CoinAPI-Key", "1dfc3423-a3cb-4aea-802e-5a7ee6b24d2d")
+                .build();
+
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.v("TAG", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) throws IOException {
+
+                if (!response.isSuccessful()) {
+                    throw new IOException("Unexpected code " + response);
+                } else {
+                    //extractCandlesFromResponse(response.body().string(), description);
+                    System.out.println(new Date());
+//                    Log.v("sample", String.valueOf(new Date()));
+                }
+            }
+        });
+
+    }
 
 
 }
