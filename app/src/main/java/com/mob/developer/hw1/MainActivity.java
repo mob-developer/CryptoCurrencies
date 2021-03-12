@@ -9,6 +9,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
         *
         * */
 
+
+        getCandles("bitcoin",Range.weekly);
 
 
         
@@ -140,8 +143,9 @@ public class MainActivity extends AppCompatActivity {
 
         String url = urlBuilder.build().toString();
 
+        //TODO : get api key from coin.io
         final Request request = new Request.Builder().url(url)
-                .addHeader("X-CoinAPI-Key", "1dfc3423-a3cb-4aea-802e-5a7ee6b24d2d")
+                .addHeader("X-CoinAPI-Key", "API_KEY")
                 .build();
 
         okHttpClient.newCall(request).enqueue(new Callback() {
@@ -156,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!response.isSuccessful()) {
                     throw new IOException("Unexpected code " + response);
                 } else {
+                    Toast.makeText(getApplicationContext(),"1",Toast.LENGTH_SHORT).show();
                     //extractCandlesFromResponse(response.body().string(), description);
 
                 }
