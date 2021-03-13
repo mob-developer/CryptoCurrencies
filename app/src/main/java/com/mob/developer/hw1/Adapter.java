@@ -79,7 +79,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         }
 
         public void setCoinPrice(String coinPrice) {
-            this.txtCoinPrice.setText(coinPrice);
+            this.txtCoinPrice.setText("$ "+coinPrice);
         }
 
         public void setCoinNameAbbr(String CoinNameAbbr) {
@@ -89,13 +89,13 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             Glide.with(Adapter.context).load(imageAddress).diskCacheStrategy(DiskCacheStrategy.ALL).into(coinImage);
         }
         public void setChange1h(String Change1h) {
-            this.change1h.setText(Change1h);
+            this.change1h.setText("1h "+Change1h);
         }
         public void setChange24h(String Change24h) {
-            this.change24h.setText(Change24h);
+            this.change24h.setText("24h "+Change24h);
         }
         public void setChange7d(String Change7d) {
-            this.change7d.setText(Change7d);
+            this.change7d.setText("7d "+Change7d);
         }
 
 
