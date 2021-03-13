@@ -159,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean getDataFromCoinMarketCap(int from, int to) throws IOException {
         OkHttpClient okHttpClient = new OkHttpClient();
+
         String url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?start=" + from + "&limit=" + to;
         HttpUrl.Builder builder = HttpUrl.parse(url).newBuilder();
         url = builder.build().toString();
