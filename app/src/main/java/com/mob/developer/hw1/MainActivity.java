@@ -146,8 +146,6 @@ public class MainActivity extends AppCompatActivity {
                 .newBuilder();
 
         String url = urlBuilder.build().toString();
-
-
         final Request request = new Request.Builder().url(url)
                 .addHeader("X-CoinAPI-Key", "917174EC-0BF3-4365-8C9E-C79741576C25")
                 .build();
