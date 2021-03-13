@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 JSONObject jsonObject = new JSONObject(responseText);
                 JSONArray jsonArray = jsonObject.getJSONArray("data");
-                Coin.convertJsonToCoins(jsonArray,1);
+                Coin.convertJsonToCoins(jsonArray,2);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

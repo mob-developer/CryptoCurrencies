@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.List;
 
@@ -85,9 +86,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             this.coinNameAbbr.setText(CoinNameAbbr);
         }
         public void setImageAddress(String imageAddress) {
-//            this.ImageAddress.setText(ImageAddress);
-            Glide.with(Adapter.context).load(imageAddress).into(coinImage);
-            //TODO
+            Glide.with(Adapter.context).load(imageAddress).diskCacheStrategy(DiskCacheStrategy.ALL).into(coinImage);
         }
         public void setChange1h(String Change1h) {
             this.change1h.setText(Change1h);
