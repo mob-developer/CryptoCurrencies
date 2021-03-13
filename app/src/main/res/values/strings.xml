@@ -4,4 +4,5 @@
     <string name="coin_name">coin name</string>
     <string name="coin_price">coin price</string>
     <string name="coin_pic">coin pic</string>
+    <string name="info">TextView</string>
 </resources>
