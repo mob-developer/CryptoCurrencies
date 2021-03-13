@@ -1,5 +1,6 @@
 package com.mob.developer.hw1;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -20,10 +23,12 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
     private final List<Coin> items;
     private final OnItemClickListener listener;
+    public static Context context;
 
-    public Adapter(List<Coin> items, OnItemClickListener listener) {
+    public Adapter(List<Coin> items, OnItemClickListener listener,Context context) {
         this.items = items;
         this.listener = listener;
+        Adapter.context = context;
     }
 
     @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -79,8 +84,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         public void setCoinNameAbbr(String CoinNameAbbr) {
             this.coinNameAbbr.setText(CoinNameAbbr);
         }
-        public void setImageAddress(String ImageAddress) {
+        public void setImageAddress(String imageAddress) {
 //            this.ImageAddress.setText(ImageAddress);
+            Glide.with(Adapter.context).load(imageAddress).into(coinImage);
             //TODO
         }
         public void setChange1h(String Change1h) {

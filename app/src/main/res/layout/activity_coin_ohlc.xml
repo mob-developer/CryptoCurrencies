@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
         android:height="60dp"
-        android:text="40 days"
+        android:text="30 days"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline3" />

@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         };
-        rvCoins.setAdapter(new Adapter(coinArrayList, listener));
+        rvCoins.setAdapter(new Adapter(coinArrayList, listener,getApplicationContext()));
 //        hideLoading();
         if (first) {
             coinArrayList = new ArrayList<>();
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 JSONObject jsonObject = new JSONObject(responseText);
                 JSONArray jsonArray = jsonObject.getJSONArray("data");
-                Coin.convertJsonToCoins(jsonArray);
+                Coin.convertJsonToCoins(jsonArray,1);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
