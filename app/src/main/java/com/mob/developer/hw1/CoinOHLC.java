@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,8 +18,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.CandleStickChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.CandleData;
+import com.github.mikephil.charting.data.CandleDataSet;
+import com.github.mikephil.charting.data.CandleEntry;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -33,6 +47,8 @@ public class CoinOHLC extends AppCompatActivity {
     private Button day7;
     private Button day40;
     private ProgressBar progressBar;
+    private CandleStickChart chart;
+    private ArrayList<CandleEntry> values;
 
     @SuppressLint("HandlerLeak")
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -43,11 +59,29 @@ public class CoinOHLC extends AppCompatActivity {
         symbol = intent.getStringExtra("abbr");
         Toast.makeText(getApplicationContext(), intent.getStringExtra("name"), Toast.LENGTH_SHORT).show();
         setContentView(R.layout.activity_coin_ohlc);
+        values = new ArrayList<>();
         day7 = findViewById(R.id.day7);
         day40 = findViewById(R.id.day40);
         information = findViewById(R.id.ohcl);
         progressBar = findViewById(R.id.progressBar2);
-        generateData(symbol,Range.weekly);
+        chart = findViewById(R.id.candle);
+        chart.setBackgroundColor(Color.rgb(50, 50, 50));
+        chart.getDescription().setEnabled(false);
+        chart.setPinchZoom(false);
+        chart.setDrawGridBackground(false);
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        YAxis leftAxis = chart.getAxisLeft();
+        leftAxis.setLabelCount(7, false);
+        leftAxis.setDrawGridLines(false);
+        leftAxis.setDrawAxisLine(false);
+        YAxis rightAxis = chart.getAxisRight();
+        rightAxis.setEnabled(false);
+        chart.getLegend().setEnabled(false);
+        chart.resetTracking();
+
+        generateData(symbol, Range.weekly);
 
         //TODO load from cache
 
@@ -59,7 +93,7 @@ public class CoinOHLC extends AppCompatActivity {
                 super.handleMessage(msg);
                 if (msg.what == LOAD_FROM_API) {
                     if (msg.arg1 == 1) {
-                        showData((String)msg.obj);
+                        showData((String) msg.obj);
                         hideLoading();
                     } else {
                         Log.e("mylog", "error in handle msg");
@@ -69,18 +103,44 @@ public class CoinOHLC extends AppCompatActivity {
         };
 
         day7.setOnClickListener(view -> {
-            generateData(symbol,Range.weekly);
+            generateData(symbol, Range.weekly);
         });
         day40.setOnClickListener(view -> {
-            generateData(symbol,Range.oneMonth);
+            generateData(symbol, Range.oneMonth);
         });
 
 
     }
 
-    private void showData(String data){
-        information.setText(data);
-        //TODO: parse data from (String)msg.obj and show
+    private void showData(String data) {
+        //information.setText(data);
+        try {
+            JSONArray jsonObject = new JSONArray(data);
+            for (int i = 0; i < jsonObject.length(); i++) {
+                JSONObject jsonObject1 = jsonObject.getJSONObject(i);
+                values.add(new CandleEntry(i,Float.parseFloat( jsonObject1.getString("price_open")),Float.parseFloat( jsonObject1.getString("price_open")),
+                        Float.parseFloat(jsonObject1.getString("price_open")), Float.parseFloat(jsonObject1.getString("price_open")),getResources().getDrawable(R.drawable.bit)));
+            }
+            CandleDataSet set1 = new CandleDataSet(values, "Data Set");
+
+            set1.setDrawIcons(false);
+            set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+//        set1.setColor(Color.rgb(80, 80, 80));
+            set1.setShadowWidth(0.7f);
+            set1.setDecreasingColor(Color.RED);
+            set1.setDecreasingPaintStyle(Paint.Style.FILL);
+            set1.setIncreasingColor(Color.rgb(122, 242, 84));
+            set1.setIncreasingPaintStyle(Paint.Style.STROKE);
+            set1.setNeutralColor(Color.BLUE);
+            //set1.setHighlightLineWidth(1f);
+
+            CandleData data1 = new CandleData(set1);
+
+            chart.setData(data1);
+            chart.invalidate();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public enum Range {
@@ -94,7 +154,7 @@ public class CoinOHLC extends AppCompatActivity {
         return String.valueOf(localDate) + "T" + "00:00:00";
     }
 
-    private void generateData(String symbol,Range range) {
+    private void generateData(String symbol, Range range) {
         showLoading();
 
         Thread threadGetData = new Thread(new Runnable() {
@@ -105,7 +165,7 @@ public class CoinOHLC extends AppCompatActivity {
                 message.what = LOAD_FROM_API;
                 try {
                     String temp = getCandles(symbol, range);
-                    if (temp==null) {
+                    if (temp == null) {
                         message.arg1 = 0;
                     } else {
                         message.arg1 = 1;
@@ -120,13 +180,18 @@ public class CoinOHLC extends AppCompatActivity {
         threadGetData.start();
     }
 
-    private void showLoading(){
+    private void showLoading() {
         progressBar.setVisibility(View.VISIBLE);
-    };
-    private void hideLoading(){
+    }
+
+    ;
+
+    private void hideLoading() {
         progressBar.setVisibility(View.GONE);
 
-    };
+    }
+
+    ;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public String getCandles(String symbol, Range range) throws IOException {
@@ -154,7 +219,7 @@ public class CoinOHLC extends AppCompatActivity {
         Response response = okHttpClient.newCall(request).execute();
         if (response.isSuccessful()) {
             String s = response.body().string();
-            Log.v("mylog",s);
+            Log.v("mylog", s);
             return s;
         } else {
             return null;
