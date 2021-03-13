@@ -11,32 +11,32 @@
 
     <ImageView
         android:id="@+id/coin_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="66dp"
+        android:layout_height="55dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_menu_gallery" />
 
     <TextView
         android:id="@+id/coin_name_lbl"
-        android:layout_width="183dp"
-        android:layout_height="35dp"
+        android:layout_width="160dp"
+        android:layout_height="21dp"
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="4dp"
         android:text="TextView"
-        android:textSize="30dp"
+        android:textSize="20dp"
         app:layout_constraintStart_toEndOf="@+id/coin_image"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/coin_price_lbl"
-        android:layout_width="260dp"
-        android:layout_height="33dp"
+        android:layout_width="199dp"
+        android:layout_height="19dp"
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
         android:text="TextView"
-        android:textSize="25dp"
+        android:textSize="18dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
