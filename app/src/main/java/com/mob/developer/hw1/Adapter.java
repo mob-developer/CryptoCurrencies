@@ -1,5 +1,6 @@
 package com.mob.developer.hw1;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.List;
 
@@ -20,10 +24,12 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
     private final List<Coin> items;
     private final OnItemClickListener listener;
+    public static Context context;
 
-    public Adapter(List<Coin> items, OnItemClickListener listener) {
+    public Adapter(List<Coin> items, OnItemClickListener listener,Context context) {
         this.items = items;
         this.listener = listener;
+        Adapter.context = context;
     }
 
     @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -36,9 +42,12 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         Coin coin = items.get(position);
         holder.setCoinPrice(String.valueOf(coin.getPrice()));
         holder.setCoinName(coin.getName());
-        holder.setChange1h(String.valueOf(coin.getPercent_change_1h()));
-        holder.setChange24h(String.valueOf(coin.getPercent_change_24h()));
-        holder.setChange7d(String.valueOf(coin.getPercent_change_7d()));
+        if (coin.getPercent_change_1h()>0)
+        holder.setChange1h("+"+String.valueOf(coin.getPercent_change_1h()));
+        if (coin.getPercent_change_24h()>0)
+        holder.setChange24h("+"+String.valueOf(coin.getPercent_change_24h()));
+        if (coin.getPercent_change_7d()>0)
+        holder.setChange7d("+"+String.valueOf(coin.getPercent_change_7d()));
         holder.setCoinNameAbbr(coin.getSymbol());
         holder.setImageAddress(coin.getImgAddress());
     }
@@ -73,24 +82,23 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         }
 
         public void setCoinPrice(String coinPrice) {
-            this.txtCoinPrice.setText(coinPrice);
+            this.txtCoinPrice.setText("$ "+coinPrice);
         }
 
         public void setCoinNameAbbr(String CoinNameAbbr) {
             this.coinNameAbbr.setText(CoinNameAbbr);
         }
-        public void setImageAddress(String ImageAddress) {
-//            this.ImageAddress.setText(ImageAddress);
-            //TODO
+        public void setImageAddress(String imageAddress) {
+            Glide.with(Adapter.context).load(imageAddress).diskCacheStrategy(DiskCacheStrategy.ALL).into(coinImage);
         }
         public void setChange1h(String Change1h) {
-            this.change1h.setText(Change1h);
+            this.change1h.setText("1h "+Change1h);
         }
         public void setChange24h(String Change24h) {
-            this.change24h.setText(Change24h);
+            this.change24h.setText("24h "+Change24h);
         }
         public void setChange7d(String Change7d) {
-            this.change7d.setText(Change7d);
+            this.change7d.setText("7d "+Change7d);
         }
 
 
