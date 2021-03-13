@@ -10,14 +10,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.time.LocalDate;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -25,10 +26,13 @@ import okhttp3.Response;
 
 
 public class CoinOHLC extends AppCompatActivity {
-    private String coinAbbrName;
-    private TextView textView;
+    private String symbol;
+    private TextView information;
     private Handler handlerThread;
     private static final int LOAD_FROM_API = 1;
+    private Button day7;
+    private Button day40;
+    private ProgressBar progressBar;
 
     @SuppressLint("HandlerLeak")
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -36,11 +40,14 @@ public class CoinOHLC extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        coinAbbrName = intent.getStringExtra("abbr");
+        symbol = intent.getStringExtra("abbr");
         Toast.makeText(getApplicationContext(), intent.getStringExtra("name"), Toast.LENGTH_SHORT).show();
         setContentView(R.layout.activity_coin_ohlc);
-        textView = findViewById(R.id.ohcl);
-        generateData(coinAbbrName,Range.weekly);
+        day7 = findViewById(R.id.day7);
+        day40 = findViewById(R.id.day40);
+        information = findViewById(R.id.ohcl);
+        progressBar = findViewById(R.id.progressBar2);
+        generateData(symbol,Range.weekly);
 
 
         handlerThread = new Handler() {
@@ -50,13 +57,28 @@ public class CoinOHLC extends AppCompatActivity {
                 super.handleMessage(msg);
                 if (msg.what == LOAD_FROM_API) {
                     if (msg.arg1 == 1) {
-                        textView.setText((String)msg.obj);
+                        showData((String)msg.obj);
+                        hideLoading();
                     } else {
                         Log.e("mylog", "error in handle msg");
                     }
                 }
             }
         };
+
+        day7.setOnClickListener(view -> {
+            generateData(symbol,Range.weekly);
+        });
+        day40.setOnClickListener(view -> {
+            generateData(symbol,Range.oneMonth);
+        });
+
+
+    }
+
+    private void showData(String data){
+        information.setText(data);
+        //TODO: parse data from (String)msg.obj and show
     }
 
     public enum Range {
@@ -97,6 +119,10 @@ public class CoinOHLC extends AppCompatActivity {
     }
 
     private void showLoading(){
+        progressBar.setVisibility(View.VISIBLE);
+    };
+    private void hideLoading(){
+        progressBar.setVisibility(View.GONE);
 
     };
 
