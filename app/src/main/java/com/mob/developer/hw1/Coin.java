@@ -1,6 +1,7 @@
 package com.mob.developer.hw1;
 
 import android.content.Context;
+import android.util.JsonReader;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -19,24 +20,26 @@ import java.util.ArrayList;
 import static android.content.Context.MODE_PRIVATE;
 
 public class Coin {
+    private long id;
     private String name;
+    private String symbol;
     private String imgAddress;
-    private String price;
-    private String abbrName;
-    private String change7d;
-    private String change1h;
-    private String change24h;
-    private static ArrayList<Coin> allCoins = new ArrayList<>();
+    private double price;
+    private double percent_change_7d;
+    private double percent_change_1h;
+    private double percent_change_24h;
+    public static ArrayList<Coin> allCoins = new ArrayList<>();
     private static final String DATA_ADDRESS = "";
 
-    public Coin(String name, String imgAddress, String price, String abbrName, String change7d, String change1h, String change24h) {
+    public Coin(long id, String name, String imgAddress, double price, String symbol, double percent_change_7d, double percent_change_1h, double percent_change_24h) {
+        this.id = id;
         this.name = name;
         this.imgAddress = imgAddress;
         this.price = price;
-        this.abbrName = abbrName;
-        this.change7d = change7d;
-        this.change1h = change1h;
-        this.change24h = change24h;
+        this.symbol = symbol;
+        this.percent_change_7d = percent_change_7d;
+        this.percent_change_1h = percent_change_1h;
+        this.percent_change_24h = percent_change_24h;
         allCoins.add(this);
     }
 
@@ -51,39 +54,39 @@ public class Coin {
     public void setPrice(String price) {
     }
 
-    public String getAbbrName() {
-        return abbrName;
+    public String getSymbol() {
+        return symbol;
     }
 
-    public void setAbbrName(String abbrName) {
-        this.abbrName = abbrName;
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 
-    public String getChange7d() {
-        return change7d;
+    public double getPercent_change_7d() {
+        return percent_change_7d;
     }
 
-    public void setChange7d(String change7d) {
-        this.change7d = change7d;
+    public void setPercent_change_7d(double percent_change_7d) {
+        this.percent_change_7d = percent_change_7d;
     }
 
-    public String getChange1h() {
-        return change1h;
+    public double getPercent_change_1h() {
+        return percent_change_1h;
     }
 
-    public void setChange1h(String change1h) {
-        this.change1h = change1h;
+    public void setPercent_change_1h(double percent_change_1h) {
+        this.percent_change_1h = percent_change_1h;
     }
 
-    public String getChange24h() {
-        return change24h;
+    public double getPercent_change_24h() {
+        return percent_change_24h;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getPrice() {
+    public double getPrice() {
         return price;
     }
 
@@ -96,7 +99,7 @@ public class Coin {
             FileOutputStream fileOutputStream = context.openFileOutput(DATA_ADDRESS, MODE_PRIVATE);
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
 
-            outputStreamWriter.write(convertCoinsToJson());
+            outputStreamWriter.write(convertCoinsToJsonArray());
             outputStreamWriter.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -120,52 +123,53 @@ public class Coin {
                     stringBuilder.append("\n").append(receiveString);
                 }
                 inputStream.close();
-                convertJsonToCoins(stringBuilder.toString());
+                convertJsonToCoins(new JSONArray(stringBuilder.toString()));
             }
         }
         catch (FileNotFoundException e) {
             Log.e("login activity", "File not found: " + e.toString());
         } catch (IOException e) {
             Log.e("login activity", "Can not read file: " + e.toString());
+        } catch (JSONException e) {
+            Log.e("json", "file can not convert to json: " + e.toString());
         }
 
     }
 
-    private static String convertCoinsToJson() {
-        JSONObject jsonObject = new JSONObject();
+    private static String convertCoinsToJsonArray() {
         JSONArray arrayOfCoins = new JSONArray();
         for (Coin coin : allCoins) {
             JSONObject objectiveCoin = new JSONObject();
             try {
+                objectiveCoin.put("id",coin.id);
                 objectiveCoin.put("name",coin.name);
+                objectiveCoin.put("symbol",coin.symbol);
                 objectiveCoin.put("imgAddress",coin.imgAddress);
-                objectiveCoin.put("price",coin.price);
-                objectiveCoin.put("abbrName",coin.abbrName);
-                objectiveCoin.put("change7d",coin.change7d);
-                objectiveCoin.put("change1h",coin.change1h);
-                objectiveCoin.put("change24h",coin.change24h);
+                JSONObject USD = new JSONObject();
+                USD.put("price",coin.price);
+                USD.put("percent_change_7d",coin.percent_change_7d);
+                USD.put("percent_change_1h",coin.percent_change_1h);
+                USD.put("percent_change_24h",coin.percent_change_24h);
+                JSONObject quote = new JSONObject();
+                quote.put("USD",USD);
+                objectiveCoin.put("quote",quote);
                 arrayOfCoins.put(objectiveCoin);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        try {
-            jsonObject.put("array", arrayOfCoins);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsonObject.toString();
+        return arrayOfCoins.toString();
     }
 
-    private static void convertJsonToCoins(String input) {
+    public static void convertJsonToCoins(JSONArray jsonArray) {
         try {
-            JSONObject jsonObject = new JSONObject(input);
-            JSONArray array = jsonObject.getJSONArray("array");
-            for (int i = 0; i < array.length() ; i++) {
-                JSONObject objectiveCoin = array.getJSONObject(i);
-                new Coin(objectiveCoin.getString("name"), objectiveCoin.getString("imgAddress"), objectiveCoin.getString("price"),
-                        objectiveCoin.getString("abbrName"), objectiveCoin.getString("change7d"), objectiveCoin.getString("change1h"),
-                        objectiveCoin.getString("change24h"));
+            for (int i = 0; i < jsonArray.length() ; i++) {
+                JSONObject objectiveCoin = jsonArray.getJSONObject(i);
+                //TODO : parse json data
+                JSONObject USD = objectiveCoin.getJSONObject("quote").getJSONObject("USD");
+                new Coin(objectiveCoin.getLong("id"), objectiveCoin.getString("name"),"a", USD.getDouble("price"),
+                        objectiveCoin.getString("symbol"), USD.getDouble("percent_change_7d"), USD.getDouble("percent_change_1h"),
+                        USD.getDouble("percent_change_24h"));
             }
         } catch (JSONException e) {
             e.printStackTrace();

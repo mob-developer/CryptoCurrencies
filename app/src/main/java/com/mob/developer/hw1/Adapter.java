@@ -34,12 +34,12 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     @Override public void onBindViewHolder(ViewHolder holder, int position) {
         holder.bind(items.get(position), listener);
         Coin coin = items.get(position);
-        holder.setCoinPrice(coin.getPrice());
+        holder.setCoinPrice(String.valueOf(coin.getPrice()));
         holder.setCoinName(coin.getName());
-        holder.setChange1h(coin.getChange1h());
-        holder.setChange24h(coin.getChange24h());
-        holder.setChange7d(coin.getChange7d());
-        holder.setCoinNameAbbr(coin.getAbbrName());
+        holder.setChange1h(String.valueOf(coin.getPercent_change_1h()));
+        holder.setChange24h(String.valueOf(coin.getPercent_change_24h()));
+        holder.setChange7d(String.valueOf(coin.getPercent_change_7d()));
+        holder.setCoinNameAbbr(coin.getSymbol());
         holder.setImageAddress(coin.getImgAddress());
     }
 

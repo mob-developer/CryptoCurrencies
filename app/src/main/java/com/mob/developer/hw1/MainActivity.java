@@ -1,89 +1,144 @@
 package com.mob.developer.hw1;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 
-
+/*
+ * coin market cap api key:
+ * 1dfc3423-a3cb-4aea-802e-5a7ee6b24d2d
+ *
+ *
+ * coinapi.io api key:
+ * 917174EC-0BF3-4365-8C9E-C79741576C25
+ * */
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Coin> coinArrayList;
     private RecyclerView rvCoins;
+    private Button loadMore;
+    private Button refresh;
     private Adapter.OnItemClickListener listener;
+    private Handler handlerThread;
+    private int lastCoin = 1;
+    private static final int LOAD_FROM_API = 1;
+    private static final int FIRST_LOAD_CACHE = 2;
+    private static final int REFRESH_DATA = 3;
 
+
+    @SuppressLint("HandlerLeak")
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+        generateData(lastCoin, 10);
 
-        /*
-         * replace generateData() with:
-         * load data from cache and show loading
-         * get data from api in new thread and fetch it in UI
-         * */
-        generateData();
-        setData();
-        Toast.makeText(getApplicationContext(),String.valueOf(getCurrentDate()), Toast.LENGTH_SHORT).show();
+        loadMore.setOnClickListener(view -> {
+            generateData(lastCoin, 5);
+        });
+        refresh.setOnClickListener(view -> {
+            Coin.allCoins = new ArrayList<>();
+            generateData(1, lastCoin - 1);
+        });
 
 
-        // test: refresh list
-        Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
+
+        //TODO add load data from cache
+
+
+        handlerThread = new Handler() {
             @Override
-            public void run() {
-                coinArrayList.add(new Coin("Bitcoin", "addr", "320500$", "bitc", "-5.6%", "+0.2%", "+0.5%"));
-                setData();
-
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (msg.what == LOAD_FROM_API) {
+                    if (msg.arg1 == 1) {
+                        coinArrayList = Coin.allCoins;
+                        setData();
+                    } else {
+                        Log.e("mylog", "error in handle msg");
+                    }
+                }
             }
         };
-        handler.postDelayed(runnable, 2000);
 
 
-        /*
-         * set onClickListener for 'load more' button
-         * and get data from api in new thread and refresh the list
-         *
-         * */
+    }
 
+    private void showLoading(int from, int limit) {
+        ProgressBar progressBar = findViewById(R.id.progressBar1);
+        progressBar.setVisibility(View.VISIBLE);
+        Button load = findViewById(R.id.load);
+        Button refresh = findViewById(R.id.refresh);
+        load.setVisibility(View.GONE);
+        refresh.setVisibility(View.GONE);
+    }
 
-        /*
-         * set onClick listener for recyclerView
-         *
-         * */
-
-
-        getCandles("BTC", Range.weekly);
-
-
+    private void hideLoading() {
+        ProgressBar progressBar = findViewById(R.id.progressBar1);
+        progressBar.setVisibility(View.GONE);
+        Button load = findViewById(R.id.load);
+        Button refresh = findViewById(R.id.refresh);
+        load.setVisibility(View.VISIBLE);
+        refresh.setVisibility(View.VISIBLE);
     }
 
     private void init() {
         coinArrayList = new ArrayList<>();
         rvCoins = findViewById(R.id.rv_coins);
+        loadMore = findViewById(R.id.load);
+        refresh = findViewById(R.id.refresh);
     }
 
-    private void generateData() {
-        coinArrayList.add(new Coin("ByteCoin", "addr2", "3000$", "byteC", "-15.6%", "+10.2%", "+10.5%"));
+    private void generateData(int from, int limit) {
+        //TODO show more beautiful loading(mirkamali)
+        showLoading(from, limit);
+
+        Thread threadGetData = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Message message = new Message();
+                message.what = LOAD_FROM_API;
+                try {
+                    boolean temp = getDataFromCoinMarketCap(from, limit);
+                    lastCoin += limit;
+                    if (temp) {
+                        message.arg1 = 1;
+                    } else {
+                        message.arg1 = 0;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                handlerThread.sendMessage(message);
+            }
+        });
+        threadGetData.start();
     }
 
     private void setData() {
@@ -91,89 +146,45 @@ public class MainActivity extends AppCompatActivity {
         listener = new Adapter.OnItemClickListener() {
             @Override
             public void onItemClick(Coin item) {
-//                Toast.makeText(getApplicationContext(),item.getName(),Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, CoinOHLC.class);
                 intent.putExtra("name", item.getName());
+                intent.putExtra("abbr", item.getSymbol());
                 startActivity(intent);
             }
         };
         rvCoins.setAdapter(new Adapter(coinArrayList, listener));
-//        rvCoins.setAdapter(new Adapter(this, coinArrayList));
-    }
-    public enum Range {
-        weekly,
-        oneMonth,
-    }
-
-    private static String getCurrentDate() {
-        Date date =  new Date(System.currentTimeMillis()-(3600*1000*24));
-        SimpleDateFormat DateFor = new SimpleDateFormat("yyyy-MM-dd");
-        String stringDate= DateFor.format(date);
-
-        SimpleDateFormat DateFor2 = new SimpleDateFormat("HH:mm:ss");
-        String stringDate2= DateFor2.format(date);
-        return stringDate+"T"+stringDate2;
+        hideLoading();
     }
 
 
-    public void getCandles(String symbol, Range range) {
-
+    private boolean getDataFromCoinMarketCap(int from, int to) throws IOException {
         OkHttpClient okHttpClient = new OkHttpClient();
 
-        String miniUrl;
-        final String description;
-        switch (range) {
-
-            case weekly:
-
-                miniUrl = "period_id=7DAY".concat("&time_start=" + String.valueOf(getCurrentDate()));
-                //+"&time_end=".concat(String.valueOf(getCurrentDate())).concat("&limit=7")
-                description = "Daily candles from now";
-                break;
-
-            case oneMonth:
-                miniUrl = "period_id=1MTH".concat("&time_end=".concat(String.valueOf(getCurrentDate())).concat("&limit=30"));
-                description = "Daily candles from now";
-                break;
-
-            default:
-                miniUrl = "";
-                description = "";
-
+        String url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?start=" + from + "&limit=" + to;
+        HttpUrl.Builder builder = HttpUrl.parse(url).newBuilder();
+        url = builder.build().toString();
+        final Request request = new Request.Builder().url(url).addHeader("X-CMC_PRO_API_KEY", "1dfc3423-a3cb-4aea-802e-5a7ee6b24d2d").build();
+        Response response = okHttpClient.newCall(request).execute();
+        if (response.isSuccessful()) {
+            String responseText = response.body().string();
+            //TODO data
+            Log.v("mylog",responseText);
+//            String first = "},\"data\":[";
+//            int location = responseText.indexOf(first);
+//            location += 9;
+//            responseText = responseText.substring(location, responseText.length() - 1);
+            try {
+                JSONObject jsonObject = new JSONObject(responseText);
+                JSONArray jsonArray = jsonObject.getJSONArray("data");
+                Coin.convertJsonToCoins(jsonArray);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return true;
+        } else {
+            return false;
         }
-
-        HttpUrl.Builder urlBuilder = HttpUrl.parse("https://rest.coinapi.io/v1/ohlcv/".concat(symbol).concat("/USD/history?".concat(miniUrl)))
-                .newBuilder();
-
-        String url = urlBuilder.build().toString();
-        final Request request = new Request.Builder().url(url)
-                .addHeader("X-CoinAPI-Key", "917174EC-0BF3-4365-8C9E-C79741576C25")
-                .build();
-
-        okHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.v("resresres", e.getMessage());
-            }
-
-            @Override
-            public void onResponse(Call call, final Response response) throws IOException {
-
-                if (!response.isSuccessful()) {
-                    throw new IOException("Unexpected code " + response);
-                } else {
-                    //extractCandlesFromResponse(response.body().string(), description);
-                    //System.out.println(new Date());
-                    Log.v("resresres", response.body().string());
-                }
-            }
-        });
-
     }
-
-
-
-
 
 
 }
