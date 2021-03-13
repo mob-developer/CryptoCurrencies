@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int LOAD_FROM_API = 1;
     private static final int FIRST_LOAD_CACHE = 2;
     private static final int REFRESH_DATA = 3;
+    private static int change = 0;
 
 
     @SuppressLint("HandlerLeak")
@@ -58,19 +59,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-        generateData(lastCoin, 10);
+        Coin.fileToCoin(this);
+        coinArrayList = Coin.allCoins;
+        setData(true);
+
+
 
         loadMore.setOnClickListener(view -> {
             generateData(lastCoin, 5);
         });
         refresh.setOnClickListener(view -> {
             Coin.allCoins = new ArrayList<>();
+            coinArrayList = new ArrayList<>();
             generateData(1, lastCoin - 1);
         });
-
-
-
-        //TODO add load data from cache
 
 
         handlerThread = new Handler() {
@@ -80,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 if (msg.what == LOAD_FROM_API) {
                     if (msg.arg1 == 1) {
                         coinArrayList = Coin.allCoins;
-                        setData();
+                        setData(false);
                     } else {
                         Log.e("mylog", "error in handle msg");
                     }
@@ -117,8 +119,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void generateData(int from, int limit) {
-        //TODO show more beautiful loading(mirkamali)
-        showLoading(from, limit);
+//        showLoading(from, limit);
 
         Thread threadGetData = new Thread(new Runnable() {
             @Override
@@ -142,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         threadGetData.start();
     }
 
-    private void setData() {
+    private boolean setData(boolean first) {
         rvCoins.setLayoutManager(new LinearLayoutManager(this));
         listener = new Adapter.OnItemClickListener() {
             @Override
@@ -154,7 +155,13 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         rvCoins.setAdapter(new Adapter(coinArrayList, listener));
-        hideLoading();
+//        hideLoading();
+        if (first) {
+            coinArrayList = new ArrayList<>();
+            Coin.allCoins = new ArrayList<>();
+            generateData(lastCoin, 10);
+        }
+        return true;
     }
 
 
@@ -168,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
         Response response = okHttpClient.newCall(request).execute();
         if (response.isSuccessful()) {
             String responseText = response.body().string();
-            Log.v("mylog",responseText);
+            Log.v("mylog", responseText);
 //            String first = "},\"data\":[";
 //            int location = responseText.indexOf(first);
 //            location += 9;
@@ -180,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            change =1;
             return true;
         } else {
             return false;
@@ -190,7 +198,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        Coin.coinToFile(this);
-        Toast.makeText(getApplicationContext(),"bye :)",Toast.LENGTH_SHORT).show();
+        if (change==1){
+            Coin.coinToFile(this);
+        }
+//        Toast.makeText(getApplicationContext(),"bye :)",Toast.LENGTH_SHORT).show();
     }
 }

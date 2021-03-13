@@ -57,7 +57,8 @@ public class CoinOHLC extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         symbol = intent.getStringExtra("abbr");
-        Toast.makeText(getApplicationContext(), intent.getStringExtra("name"), Toast.LENGTH_SHORT).show();
+        this.setTitle(intent.getStringExtra("name"));
+//        Toast.makeText(getApplicationContext(), intent.getStringExtra("name"), Toast.LENGTH_SHORT).show();
         setContentView(R.layout.activity_coin_ohlc);
         values = new ArrayList<>();
         day7 = findViewById(R.id.day7);
