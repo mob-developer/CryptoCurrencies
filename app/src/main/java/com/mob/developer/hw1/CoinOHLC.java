@@ -154,7 +154,6 @@ public class CoinOHLC extends AppCompatActivity {
         Response response = okHttpClient.newCall(request).execute();
         if (response.isSuccessful()) {
             String s = response.body().string();
-            //TODO
             Log.v("mylog",s);
             return s;
         } else {
