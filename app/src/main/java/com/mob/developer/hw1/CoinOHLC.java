@@ -49,6 +49,8 @@ public class CoinOHLC extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar2);
         generateData(symbol,Range.weekly);
 
+        //TODO load from cache
+
 
         handlerThread = new Handler() {
             @SuppressLint("HandlerLeak")

@@ -65,9 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        /*
-         * add load data from cache
-         * */
+        //TODO add load data from cache
 
 
         handlerThread = new Handler() {
