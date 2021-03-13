@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Coin> coinArrayList;
     private RecyclerView rvCoins;
     private Button loadMore;
+    private Button refresh;
     private Adapter.OnItemClickListener listener;
     private Handler handlerThread;
     private int lastCoin = 1;
@@ -54,17 +55,17 @@ public class MainActivity extends AppCompatActivity {
         loadMore.setOnClickListener(view -> {
             generateData(lastCoin,5);
         });
+        refresh.setOnClickListener(view -> {
+            Coin.allCoins = new ArrayList<>();
+            generateData(1,lastCoin-1);
+        });
+
 
 
         /*
          * add load data from cache
          * */
 
-        /*
-         * set onClickListener for 'load more' button
-         * and get data from api in new thread and refresh the list
-         *
-         * */
 
         handlerThread = new Handler() {
             @Override
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                         coinArrayList = Coin.allCoins;
                         setData();
                     } else {
-                        Log.v("mylog", "error in handle msg");
+                        Log.e("mylog", "error in handle msg");
                     }
                 }
             }
@@ -106,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         coinArrayList = new ArrayList<>();
         rvCoins = findViewById(R.id.rv_coins);
         loadMore = findViewById(R.id.load);
+        refresh = findViewById(R.id.refresh);
     }
 
     private void generateData(int from,int limit) {
@@ -117,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 message.what = LOAD_FROM_API;
                 try {
                     boolean temp = getDataFromCoinMarketCap(from, limit);
-                    lastCoin+=5;
+                    lastCoin+=limit;
                     if (temp) {
                         message.arg1 = 1;
                     } else {

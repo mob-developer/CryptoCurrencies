@@ -26,7 +26,7 @@ public class Coin {
     private String change7d;
     private String change1h;
     private String change24h;
-    public static final ArrayList<Coin> allCoins = new ArrayList<>();
+    public static ArrayList<Coin> allCoins = new ArrayList<>();
     private static final String DATA_ADDRESS = "";
 
     public Coin(String name, String imgAddress, String price, String symbol, String change7d, String change1h, String change24h) {
