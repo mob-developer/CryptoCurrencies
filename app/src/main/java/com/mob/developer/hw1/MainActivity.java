@@ -16,6 +16,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -155,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean getDataFromCoinMarketCap(int from, int to) throws IOException {
         OkHttpClient okHttpClient = new OkHttpClient();
+
         String url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?start=" + from + "&limit=" + to;
         HttpUrl.Builder builder = HttpUrl.parse(url).newBuilder();
         url = builder.build().toString();
@@ -162,13 +167,19 @@ public class MainActivity extends AppCompatActivity {
         Response response = okHttpClient.newCall(request).execute();
         if (response.isSuccessful()) {
             String responseText = response.body().string();
-            String first = "},\"data\":[";
-            int location = responseText.indexOf(first);
-            location += 9;
-            responseText = responseText.substring(location, responseText.length() - 1);
-            Coin.convertJsonToCoins(responseText);
             //TODO data
             Log.v("mylog",responseText);
+//            String first = "},\"data\":[";
+//            int location = responseText.indexOf(first);
+//            location += 9;
+//            responseText = responseText.substring(location, responseText.length() - 1);
+            try {
+                JSONObject jsonObject = new JSONObject(responseText);
+                JSONArray jsonArray = jsonObject.getJSONArray("data");
+                Coin.convertJsonToCoins(jsonArray);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             return true;
         } else {
             return false;
