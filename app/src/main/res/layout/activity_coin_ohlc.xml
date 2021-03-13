@@ -32,17 +32,19 @@
         android:layout_margin="15dp"
         android:height="60dp"
         android:text="7 days"
+        android:backgroundTint="#FF05A1C8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/day40"
+        android:id="@+id/day30"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
         android:height="60dp"
-        android:text="40 days"
+        android:text="30 days"
+        android:backgroundTint="#FF05A1C8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline3" />

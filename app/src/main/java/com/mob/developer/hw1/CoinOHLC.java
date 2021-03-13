@@ -45,7 +45,7 @@ public class CoinOHLC extends AppCompatActivity {
     private Handler handlerThread;
     private static final int LOAD_FROM_API = 1;
     private Button day7;
-    private Button day40;
+    private Button day30;
     private ProgressBar progressBar;
     private CandleStickChart chart;
     private ArrayList<CandleEntry> values;
@@ -62,7 +62,7 @@ public class CoinOHLC extends AppCompatActivity {
         setContentView(R.layout.activity_coin_ohlc);
         values = new ArrayList<>();
         day7 = findViewById(R.id.day7);
-        day40 = findViewById(R.id.day40);
+        day30 = findViewById(R.id.day30);
         information = findViewById(R.id.ohcl);
         progressBar = findViewById(R.id.progressBar2);
         chart = findViewById(R.id.candle);
@@ -82,9 +82,9 @@ public class CoinOHLC extends AppCompatActivity {
         chart.getLegend().setEnabled(false);
         chart.resetTracking();
 
+        day7.setBackgroundColor(getResources().getColor(R.color.grey));
+        day7.setEnabled(false);
         generateData(symbol, Range.weekly);
-
-
 
         handlerThread = new Handler() {
             @SuppressLint("HandlerLeak")
@@ -103,9 +103,17 @@ public class CoinOHLC extends AppCompatActivity {
         };
 
         day7.setOnClickListener(view -> {
+            day7.setBackgroundColor(getResources().getColor(R.color.grey));
+            day30.setBackgroundColor(getResources().getColor(R.color.blue));
+            day30.setEnabled(true);
+            day7.setEnabled(false);
             generateData(symbol, Range.weekly);
         });
-        day40.setOnClickListener(view -> {
+        day30.setOnClickListener(view -> {
+            day7.setBackgroundColor(getResources().getColor(R.color.blue));
+            day30.setBackgroundColor(getResources().getColor(R.color.grey));
+            day7.setEnabled(true);
+            day30.setEnabled(false);
             generateData(symbol, Range.oneMonth);
         });
 
