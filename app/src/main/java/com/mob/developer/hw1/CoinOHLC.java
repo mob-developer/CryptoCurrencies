@@ -65,7 +65,7 @@ public class CoinOHLC extends AppCompatActivity {
         information = findViewById(R.id.ohcl);
         progressBar = findViewById(R.id.progressBar2);
         chart = findViewById(R.id.candle);
-        chart.setBackgroundColor(Color.rgb(50, 50, 50));
+        chart.setBackgroundColor(Color.rgb(240, 250, 240));
         chart.getDescription().setEnabled(false);
         chart.setPinchZoom(false);
         chart.setDrawGridBackground(false);
@@ -83,7 +83,6 @@ public class CoinOHLC extends AppCompatActivity {
 
         generateData(symbol, Range.weekly);
 
-        //TODO load from cache
 
 
         handlerThread = new Handler() {
@@ -114,22 +113,24 @@ public class CoinOHLC extends AppCompatActivity {
 
     private void showData(String data) {
         //information.setText(data);
+        values.clear();
         try {
             JSONArray jsonObject = new JSONArray(data);
             for (int i = 0; i < jsonObject.length(); i++) {
                 JSONObject jsonObject1 = jsonObject.getJSONObject(i);
-                values.add(new CandleEntry(i,Float.parseFloat( jsonObject1.getString("price_open")),Float.parseFloat( jsonObject1.getString("price_open")),
-                        Float.parseFloat(jsonObject1.getString("price_open")), Float.parseFloat(jsonObject1.getString("price_open")),getResources().getDrawable(R.drawable.bit)));
+                values.add(new CandleEntry(i,Float.parseFloat( jsonObject1.getString("price_high")),Float.parseFloat( jsonObject1.getString("price_low")),
+                        Float.parseFloat(jsonObject1.getString("price_open")), Float.parseFloat(jsonObject1.getString("price_close")),getResources().getDrawable(R.drawable.bit)));
             }
             CandleDataSet set1 = new CandleDataSet(values, "Data Set");
 
             set1.setDrawIcons(false);
             set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+            set1.setShadowColor(Color.rgb(10,10,0));
 //        set1.setColor(Color.rgb(80, 80, 80));
             set1.setShadowWidth(0.7f);
             set1.setDecreasingColor(Color.RED);
             set1.setDecreasingPaintStyle(Paint.Style.FILL);
-            set1.setIncreasingColor(Color.rgb(122, 242, 84));
+            set1.setIncreasingColor(Color.rgb(90, 200, 50));
             set1.setIncreasingPaintStyle(Paint.Style.STROKE);
             set1.setNeutralColor(Color.BLUE);
             //set1.setHighlightLineWidth(1f);
