@@ -162,6 +162,7 @@ public class Coin {
              JSONArray jsonObject = new JSONArray(input);
             for (int i = 0; i < jsonObject.length() ; i++) {
                 JSONObject objectiveCoin = jsonObject.getJSONObject(i);
+                //TODO : parse json data
                 new Coin(objectiveCoin.getString("name"),"a", "10203",
                         objectiveCoin.getString("symbol"), objectiveCoin.getString("cmc_rank"), "change1ddd",
                         "aaaaa");
