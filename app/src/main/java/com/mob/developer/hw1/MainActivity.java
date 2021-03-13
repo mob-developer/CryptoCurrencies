@@ -162,6 +162,8 @@ public class MainActivity extends AppCompatActivity {
         Response response = okHttpClient.newCall(request).execute();
         if (response.isSuccessful()) {
             String responseText = response.body().string();
+            //TODO data
+            Log.v("mylog",responseText);
             String first = "},\"data\":[";
             int location = responseText.indexOf(first);
             location += 9;
