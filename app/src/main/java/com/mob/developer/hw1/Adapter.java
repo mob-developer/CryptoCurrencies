@@ -42,9 +42,12 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         Coin coin = items.get(position);
         holder.setCoinPrice(String.valueOf(coin.getPrice()));
         holder.setCoinName(coin.getName());
-        holder.setChange1h(String.valueOf(coin.getPercent_change_1h()));
-        holder.setChange24h(String.valueOf(coin.getPercent_change_24h()));
-        holder.setChange7d(String.valueOf(coin.getPercent_change_7d()));
+        if (coin.getPercent_change_1h()>0)
+        holder.setChange1h("+"+String.valueOf(coin.getPercent_change_1h()));
+        if (coin.getPercent_change_24h()>0)
+        holder.setChange24h("+"+String.valueOf(coin.getPercent_change_24h()));
+        if (coin.getPercent_change_7d()>0)
+        holder.setChange7d("+"+String.valueOf(coin.getPercent_change_7d()));
         holder.setCoinNameAbbr(coin.getSymbol());
         holder.setImageAddress(coin.getImgAddress());
     }
