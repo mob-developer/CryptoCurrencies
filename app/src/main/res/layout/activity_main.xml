@@ -7,12 +7,39 @@
     tools:context=".MainActivity">
 
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_coins"
-        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        tools:listitem="@layout/row"
-        />
+        android:layout_height="match_parent"
+        tools:listitem="@layout/coin_row" />
+
+    <Button
+        android:id="@+id/load"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:height="60dp"
+        android:text="load more"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/refresh"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:height="60dp"
+        android:text="refresh"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

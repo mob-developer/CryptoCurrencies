@@ -39,7 +39,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         holder.setChange1h(coin.getChange1h());
         holder.setChange24h(coin.getChange24h());
         holder.setChange7d(coin.getChange7d());
-        holder.setCoinNameAbbr(coin.getAbbrName());
+        holder.setCoinNameAbbr(coin.getSymbol());
         holder.setImageAddress(coin.getImgAddress());
     }
 

@@ -22,18 +22,18 @@ public class Coin {
     private String name;
     private String imgAddress;
     private String price;
-    private String abbrName;
+    private String symbol;
     private String change7d;
     private String change1h;
     private String change24h;
-    private static ArrayList<Coin> allCoins = new ArrayList<>();
+    public static final ArrayList<Coin> allCoins = new ArrayList<>();
     private static final String DATA_ADDRESS = "";
 
-    public Coin(String name, String imgAddress, String price, String abbrName, String change7d, String change1h, String change24h) {
+    public Coin(String name, String imgAddress, String price, String symbol, String change7d, String change1h, String change24h) {
         this.name = name;
         this.imgAddress = imgAddress;
         this.price = price;
-        this.abbrName = abbrName;
+        this.symbol = symbol;
         this.change7d = change7d;
         this.change1h = change1h;
         this.change24h = change24h;
@@ -51,12 +51,12 @@ public class Coin {
     public void setPrice(String price) {
     }
 
-    public String getAbbrName() {
-        return abbrName;
+    public String getSymbol() {
+        return symbol;
     }
 
-    public void setAbbrName(String abbrName) {
-        this.abbrName = abbrName;
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 
     public String getChange7d() {
@@ -140,7 +140,7 @@ public class Coin {
                 objectiveCoin.put("name",coin.name);
                 objectiveCoin.put("imgAddress",coin.imgAddress);
                 objectiveCoin.put("price",coin.price);
-                objectiveCoin.put("abbrName",coin.abbrName);
+                objectiveCoin.put("abbrName",coin.symbol);
                 objectiveCoin.put("change7d",coin.change7d);
                 objectiveCoin.put("change1h",coin.change1h);
                 objectiveCoin.put("change24h",coin.change24h);
@@ -157,15 +157,14 @@ public class Coin {
         return jsonObject.toString();
     }
 
-    private static void convertJsonToCoins(String input) {
+    public static void convertJsonToCoins(String input) {
         try {
-            JSONObject jsonObject = new JSONObject(input);
-            JSONArray array = jsonObject.getJSONArray("array");
-            for (int i = 0; i < array.length() ; i++) {
-                JSONObject objectiveCoin = array.getJSONObject(i);
-                new Coin(objectiveCoin.getString("name"), objectiveCoin.getString("imgAddress"), objectiveCoin.getString("price"),
-                        objectiveCoin.getString("abbrName"), objectiveCoin.getString("change7d"), objectiveCoin.getString("change1h"),
-                        objectiveCoin.getString("change24h"));
+             JSONArray jsonObject = new JSONArray(input);
+            for (int i = 0; i < jsonObject.length() ; i++) {
+                JSONObject objectiveCoin = jsonObject.getJSONObject(i);
+                new Coin(objectiveCoin.getString("name"),"a", "10203",
+                        objectiveCoin.getString("symbol"), objectiveCoin.getString("cmc_rank"), "change1ddd",
+                        "aaaaa");
             }
         } catch (JSONException e) {
             e.printStackTrace();
