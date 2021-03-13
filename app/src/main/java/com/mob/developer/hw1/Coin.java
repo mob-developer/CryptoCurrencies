@@ -94,7 +94,7 @@ public class Coin {
         return imgAddress;
     }
 
-    public static void logToFile(Context context) {
+    public static void CoinToFile(Context context) {
         try {
             FileOutputStream fileOutputStream = context.openFileOutput(DATA_ADDRESS, MODE_PRIVATE);
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
@@ -109,7 +109,7 @@ public class Coin {
 
     }
 
-    public static void fileToLog(Context context) {
+    public static void fileToCoin(Context context) {
         try {
             InputStream inputStream = context.openFileInput(DATA_ADDRESS);
 
@@ -167,9 +167,9 @@ public class Coin {
                 JSONObject objectiveCoin = jsonArray.getJSONObject(i);
                 //TODO : parse json data
                 JSONObject USD = objectiveCoin.getJSONObject("quote").getJSONObject("USD");
-                new Coin(objectiveCoin.getLong("id"), objectiveCoin.getString("name"),"a", USD.getDouble("price"),
-                        objectiveCoin.getString("symbol"), USD.getDouble("percent_change_7d"), USD.getDouble("percent_change_1h"),
-                        USD.getDouble("percent_change_24h"));
+                new Coin(objectiveCoin.getLong("id"), objectiveCoin.getString("name"),"a", Math.round(USD.getDouble("price") *1000.0) / 1000.0,
+                        objectiveCoin.getString("symbol"), Math.round(USD.getDouble("percent_change_7d") * 100.0) / 100.0, Math.round(USD.getDouble("percent_change_1h") * 100.0) / 100.0,
+                        Math.round(USD.getDouble("percent_change_24h")* 100.0) / 100.0 );
             }
         } catch (JSONException e) {
             e.printStackTrace();
