@@ -98,7 +98,6 @@ public class Coin {
         try {
             FileOutputStream fileOutputStream = context.openFileOutput(DATA_ADDRESS, MODE_PRIVATE);
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
-
             outputStreamWriter.write(convertCoinsToJsonArray());
             outputStreamWriter.close();
         } catch (FileNotFoundException e) {
