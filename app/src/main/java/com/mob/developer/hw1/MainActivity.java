@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -167,7 +168,6 @@ public class MainActivity extends AppCompatActivity {
         Response response = okHttpClient.newCall(request).execute();
         if (response.isSuccessful()) {
             String responseText = response.body().string();
-            //TODO data
             Log.v("mylog",responseText);
 //            String first = "},\"data\":[";
 //            int location = responseText.indexOf(first);
@@ -187,4 +187,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Coin.coinToFile(this);
+        Toast.makeText(getApplicationContext(),"bye :)",Toast.LENGTH_SHORT).show();
+    }
 }

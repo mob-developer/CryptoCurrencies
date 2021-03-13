@@ -29,7 +29,7 @@ public class Coin {
     private double percent_change_1h;
     private double percent_change_24h;
     public static ArrayList<Coin> allCoins = new ArrayList<>();
-    private static final String DATA_ADDRESS = "";
+    private static final String DATA_ADDRESS = "coin.txt";
 
     public Coin(long id, String name, String imgAddress, double price, String symbol, double percent_change_7d, double percent_change_1h, double percent_change_24h) {
         this.id = id;
@@ -94,7 +94,7 @@ public class Coin {
         return imgAddress;
     }
 
-    public static void CoinToFile(Context context) {
+    public static void coinToFile(Context context) {
         try {
             FileOutputStream fileOutputStream = context.openFileOutput(DATA_ADDRESS, MODE_PRIVATE);
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
@@ -165,7 +165,6 @@ public class Coin {
         try {
             for (int i = 0; i < jsonArray.length() ; i++) {
                 JSONObject objectiveCoin = jsonArray.getJSONObject(i);
-                //TODO : parse json data
                 JSONObject USD = objectiveCoin.getJSONObject("quote").getJSONObject("USD");
                 new Coin(objectiveCoin.getLong("id"), objectiveCoin.getString("name"),"a", Math.round(USD.getDouble("price") *1000.0) / 1000.0,
                         objectiveCoin.getString("symbol"), Math.round(USD.getDouble("percent_change_7d") * 100.0) / 100.0, Math.round(USD.getDouble("percent_change_1h") * 100.0) / 100.0,
