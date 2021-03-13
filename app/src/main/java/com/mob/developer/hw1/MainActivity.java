@@ -12,6 +12,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
@@ -86,12 +89,30 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void showLoading(){
+        ProgressBar progressBar = findViewById(R.id.progressBar1);
+        progressBar.setVisibility(View.VISIBLE);
+        Button load = findViewById(R.id.load);
+        Button refresh = findViewById(R.id.refresh);
+        load.setVisibility(View.GONE);
+        refresh.setVisibility(View.GONE);
+    }
+    private void hideLoading(){
+        ProgressBar progressBar = findViewById(R.id.progressBar1);
+        progressBar.setVisibility(View.GONE);
+        Button load = findViewById(R.id.load);
+        Button refresh = findViewById(R.id.refresh);
+        load.setVisibility(View.VISIBLE);
+        refresh.setVisibility(View.VISIBLE);
+    }
+
     private void init() {
         coinArrayList = new ArrayList<>();
         rvCoins = findViewById(R.id.rv_coins);
     }
 
     private void generateData() {
+        showLoading();
         Thread threadGetData = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -126,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         rvCoins.setAdapter(new Adapter(coinArrayList, listener));
+        hideLoading();
 //        rvCoins.setAdapter(new Adapter(this, coinArrayList));
     }
 
