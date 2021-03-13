@@ -1,6 +1,7 @@
 package com.mob.developer.hw1;
 
 import android.content.Context;
+import android.util.JsonReader;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import static android.content.Context.MODE_PRIVATE;
 
 public class Coin {
+    private long id;
     private String name;
     private String symbol;
     private String imgAddress;
@@ -29,7 +31,8 @@ public class Coin {
     public static ArrayList<Coin> allCoins = new ArrayList<>();
     private static final String DATA_ADDRESS = "";
 
-    public Coin(String name, String imgAddress, double price, String symbol, double percent_change_7d, double percent_change_1h, double percent_change_24h) {
+    public Coin(long id, String name, String imgAddress, double price, String symbol, double percent_change_7d, double percent_change_1h, double percent_change_24h) {
+        this.id = id;
         this.name = name;
         this.imgAddress = imgAddress;
         this.price = price;
@@ -138,6 +141,7 @@ public class Coin {
         for (Coin coin : allCoins) {
             JSONObject objectiveCoin = new JSONObject();
             try {
+                objectiveCoin.put("id",coin.id);
                 objectiveCoin.put("name",coin.name);
                 objectiveCoin.put("symbol",coin.symbol);
                 objectiveCoin.put("imgAddress",coin.imgAddress);
@@ -163,7 +167,7 @@ public class Coin {
                 JSONObject objectiveCoin = jsonArray.getJSONObject(i);
                 //TODO : parse json data
                 JSONObject USD = objectiveCoin.getJSONObject("quote").getJSONObject("USD");
-                new Coin(objectiveCoin.getString("name"),"a", USD.getDouble("price"),
+                new Coin(objectiveCoin.getLong("id"), objectiveCoin.getString("name"),"a", USD.getDouble("price"),
                         objectiveCoin.getString("symbol"), USD.getDouble("percent_change_7d"), USD.getDouble("percent_change_1h"),
                         USD.getDouble("percent_change_24h"));
             }

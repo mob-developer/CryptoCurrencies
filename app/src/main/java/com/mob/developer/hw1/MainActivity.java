@@ -16,6 +16,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -164,11 +168,17 @@ public class MainActivity extends AppCompatActivity {
             String responseText = response.body().string();
             //TODO data
             Log.v("mylog",responseText);
-            String first = "},\"data\":[";
-            int location = responseText.indexOf(first);
-            location += 9;
-            responseText = responseText.substring(location, responseText.length() - 1);
-            Coin.convertJsonToCoins(responseText);
+//            String first = "},\"data\":[";
+//            int location = responseText.indexOf(first);
+//            location += 9;
+//            responseText = responseText.substring(location, responseText.length() - 1);
+            try {
+                JSONObject jsonObject = new JSONObject(responseText);
+                JSONArray jsonArray = jsonObject.getJSONArray("data");
+                Coin.convertJsonToCoins(jsonArray);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             return true;
         } else {
             return false;
