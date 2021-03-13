@@ -29,6 +29,9 @@ import okhttp3.Response;
  * coin market cap api key:
  * 1dfc3423-a3cb-4aea-802e-5a7ee6b24d2d
  *
+ *
+ * coinapi.io api key:
+ * 917174EC-0BF3-4365-8C9E-C79741576C25
  * */
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Coin> coinArrayList;
@@ -38,9 +41,9 @@ public class MainActivity extends AppCompatActivity {
     private Adapter.OnItemClickListener listener;
     private Handler handlerThread;
     private int lastCoin = 1;
-    public final int LOAD_FROM_API = 1;
-    public final int FIRST_LOAD_CACHE = 2;
-    public final int REFRESH_DATA = 3;
+    private static final int LOAD_FROM_API = 1;
+    private static final int FIRST_LOAD_CACHE = 2;
+    private static final int REFRESH_DATA = 3;
 
 
     @SuppressLint("HandlerLeak")
@@ -50,14 +53,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-        generateData(lastCoin,10);
+        generateData(lastCoin, 10);
 
         loadMore.setOnClickListener(view -> {
-            generateData(lastCoin,5);
+            generateData(lastCoin, 5);
         });
         refresh.setOnClickListener(view -> {
             Coin.allCoins = new ArrayList<>();
-            generateData(1,lastCoin-1);
+            generateData(1, lastCoin - 1);
         });
 
 
@@ -85,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void showLoading() {
+    private void showLoading(int from, int limit) {
         ProgressBar progressBar = findViewById(R.id.progressBar1);
         progressBar.setVisibility(View.VISIBLE);
         Button load = findViewById(R.id.load);
@@ -110,8 +113,10 @@ public class MainActivity extends AppCompatActivity {
         refresh = findViewById(R.id.refresh);
     }
 
-    private void generateData(int from,int limit) {
-        showLoading();
+    private void generateData(int from, int limit) {
+        //TODO show more beautiful loading(mirkamali)
+        showLoading(from, limit);
+
         Thread threadGetData = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -119,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 message.what = LOAD_FROM_API;
                 try {
                     boolean temp = getDataFromCoinMarketCap(from, limit);
-                    lastCoin+=limit;
+                    lastCoin += limit;
                     if (temp) {
                         message.arg1 = 1;
                     } else {
@@ -134,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         threadGetData.start();
     }
 
-    public void setData() {
+    private void setData() {
         rvCoins.setLayoutManager(new LinearLayoutManager(this));
         listener = new Adapter.OnItemClickListener() {
             @Override
