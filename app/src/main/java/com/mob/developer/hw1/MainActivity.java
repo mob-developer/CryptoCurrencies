@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                         coinArrayList = Coin.allCoins;
                         setData(false);
                     } else {
-                        Log.e("mylog", "error in handle msg");
+                        Log.e("handleError", "error in handle msg");
                     }
                 }
             }
